@@ -149,9 +149,7 @@ dotnet test --collect:"XPlat Code Coverage"
 
 ### Manual Testing
 - **HTTP File**: Use `WorkflowEngine.http` with VS Code REST Client
-- **Demo Scripts**: 
-  - PowerShell: `.\api-demo.ps1`
-  - Bash: `./api-demo.sh`
+- **Swagger UI**: Interactive API documentation at `http://localhost:5000/swagger`
 
 ## 📁 Project Structure
 
@@ -173,8 +171,6 @@ WorkflowEngine/
 ├── WorkflowEngine.Tests/              # Unit tests
 │   └── WorkflowServiceTests.cs        # Comprehensive test suite
 ├── WorkflowEngine.http                # HTTP test file
-├── api-demo.ps1                       # PowerShell demo
-├── api-demo.sh                        # Bash demo
 ├── WorkflowEngine.sln                 # Solution file
 └── README.md                          # This file
 ```
