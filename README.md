@@ -1,11 +1,17 @@
 # 🔄 Configurable Workflow Engine
 
-> **Assignment Submission for Infonetica**  
+> **Assignment Submiss### Test the API
+```bash
+# Health check
+curl http://localhost:5000/health
+
+# View API documentation
+# Open: http://localhost:5000/swagger
+```Infonetica**  
 > A complete implementation of a configurable workflow engine using .NET 8 and C#
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
 [![C#](https://img.shields.io/badge/C%23-12.0-green.svg)](https://docs.microsoft.com/en-us/dotnet/csharp/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-14%20Passing-brightgreen.svg)](#testing)
 
 ## 📋 Overview

@@ -5,7 +5,8 @@ using WorkflowEngine.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Register workflow services as singletons for in-memory storage
 builder.Services.AddSingleton<InMemoryWorkflowStore>();
@@ -27,7 +28,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.UseCors("AllowAll");
 }
 
@@ -54,8 +56,7 @@ app.MapPost("/api/workflows", (CreateWorkflowDefinitionRequest request, Workflow
 })
 .WithName("CreateWorkflowDefinition")
 .WithSummary("Create a new workflow definition")
-.WithDescription("Creates a new workflow definition with states and actions. Validates that there is exactly one initial state and all references are valid.")
-.WithOpenApi();
+.WithDescription("Creates a new workflow definition with states and actions. Validates that there is exactly one initial state and all references are valid.");
 
 /// <summary>
 /// Retrieves all workflow definitions.
@@ -74,8 +75,7 @@ app.MapGet("/api/workflows", (WorkflowService service) =>
 })
 .WithName("GetAllWorkflowDefinitions")
 .WithSummary("Get all workflow definitions")
-.WithDescription("Retrieves a list of all workflow definitions in the system.")
-.WithOpenApi();
+.WithDescription("Retrieves a list of all workflow definitions in the system.");
 
 /// <summary>
 /// Retrieves a specific workflow definition by ID.
@@ -98,8 +98,7 @@ app.MapGet("/api/workflows/{id}", (string id, WorkflowService service) =>
 })
 .WithName("GetWorkflowDefinition")
 .WithSummary("Get a workflow definition by ID")
-.WithDescription("Retrieves a specific workflow definition by its unique identifier.")
-.WithOpenApi();
+.WithDescription("Retrieves a specific workflow definition by its unique identifier.");
 
 // Workflow Instance Endpoints
 
@@ -124,8 +123,7 @@ app.MapPost("/api/workflows/{definitionId}/instances", (string definitionId, Wor
 })
 .WithName("CreateWorkflowInstance")
 .WithSummary("Create a new workflow instance")
-.WithDescription("Creates a new workflow instance from a workflow definition. The instance starts in the initial state.")
-.WithOpenApi();
+.WithDescription("Creates a new workflow instance from a workflow definition. The instance starts in the initial state.");
 
 /// <summary>
 /// Retrieves all workflow instances.
@@ -144,8 +142,7 @@ app.MapGet("/api/instances", (WorkflowService service) =>
 })
 .WithName("GetAllWorkflowInstances")
 .WithSummary("Get all workflow instances")
-.WithDescription("Retrieves a list of all workflow instances in the system.")
-.WithOpenApi();
+.WithDescription("Retrieves a list of all workflow instances in the system.");
 
 /// <summary>
 /// Retrieves a specific workflow instance by ID.
@@ -168,8 +165,7 @@ app.MapGet("/api/instances/{id}", (string id, WorkflowService service) =>
 })
 .WithName("GetWorkflowInstance")
 .WithSummary("Get a workflow instance by ID")
-.WithDescription("Retrieves a specific workflow instance by its unique identifier, including current state and execution history.")
-.WithOpenApi();
+.WithDescription("Retrieves a specific workflow instance by its unique identifier, including current state and execution history.");
 
 /// <summary>
 /// Executes an action on a workflow instance.
@@ -192,14 +188,12 @@ app.MapPost("/api/instances/{id}/actions", (string id, ExecuteActionRequest requ
 })
 .WithName("ExecuteAction")
 .WithSummary("Execute an action on a workflow instance")
-.WithDescription("Executes an action on a workflow instance, transitioning it to a new state. Validates that the action can be executed from the current state.")
-.WithOpenApi();
+.WithDescription("Executes an action on a workflow instance, transitioning it to a new state. Validates that the action can be executed from the current state.");
 
 // Health check endpoint
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }))
 .WithName("HealthCheck")
 .WithSummary("Health check endpoint")
-.WithDescription("Returns the current health status of the workflow engine.")
-.WithOpenApi();
+.WithDescription("Returns the current health status of the workflow engine.");
 
 app.Run();
