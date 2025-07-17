@@ -214,4 +214,7 @@ RESTful endpoints with consistent error handling and OpenAPI documentation for b
 
 ## Author
 
-Student Assignment Submission for Infonetica
+Amlesh Kumar
+Email: amleshkr396@gmail.com
+Contact No.:6299855492
+Roll No.: 23MT10005
