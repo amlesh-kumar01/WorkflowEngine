@@ -1,100 +1,178 @@
-# 🔄 Configurable Workflow Engine
+# Configurable Workflow Engine
 
-> **Assignment Submiss### Test the API
-```bash
-# Health check
-curl http://localhost:5000/health
+**Assignment Submission for Infonetica**
 
-# View API documentation
-# Open: http://localhost:5000/swagger
-```Infonetica**  
-> A complete implementation of a configurable workflow engine using .NET 8 and C#
+A configurable workflow engine implementation using .NET 8 and C# that allows users to define workflows as state machines and execute them with comprehensive validation.
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/download/dotnet/8.0)
-[![C#](https://img.shields.io/badge/C%23-12.0-green.svg)](https://docs.microsoft.com/en-us/dotnet/csharp/)
-[![Tests](https://img.shields.io/badge/Tests-14%20Passing-brightgreen.svg)](#testing)
+## Overview
 
-## 📋 Overview
+This project implements a workflow engine that manages business processes through state machines. Users can define workflows with states and actions, create instances of these workflows, and execute actions to transition between states while maintaining validation rules and history tracking.
 
-This project implements a **Configurable Workflow Engine** that allows users to define workflows as state machines and execute them with comprehensive validation. Built with modern .NET 8 and clean architecture principles, it provides a robust foundation for workflow management systems.
+## Assumptions Made
 
-### ✨ Key Features
+During the implementation of this workflow engine, the following assumptions were made:
 
-- 🔧 **Configurable Workflows**: Define custom workflows with states and actions
-- 🔄 **State Machine Engine**: Robust state transition management
-- ✅ **Comprehensive Validation**: Business rules enforced at every step
-- 📊 **History Tracking**: Complete audit trail of all workflow executions
-- 🌐 **REST API**: Clean HTTP endpoints with OpenAPI documentation
-- 🧪 **Fully Tested**: 14 unit tests covering all scenarios
-- 🚀 **Production Ready**: Thread-safe, extensible architecture
+### Workflow Definition Assumptions
+- Each workflow must have exactly one initial state to ensure deterministic starting point
+- State and action IDs must be unique within a workflow definition to avoid conflicts
+- All states and actions must have meaningful names for better usability
+- Final states cannot have outgoing transitions as they represent end points
+- Disabled states cannot execute actions but can be transitioned to
 
-## 🏗️ Architecture
+### State Machine Assumptions
+- State transitions are atomic operations that either succeed completely or fail
+- History tracking is required for all state changes for audit purposes
+- Multiple actions can lead to the same target state from different source states
+- Actions can have multiple source states but only one target state
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Controllers   │    │    Services     │    │     Models      │
-│   (Program.cs)  │───▶│ WorkflowService │───▶│ WorkflowDef...  │
-│                 │    │ WorkflowStore   │    │ WorkflowInst... │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-        │                        │                        │
-        ▼                        ▼                        ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│      DTOs       │    │  Validation     │    │   Persistence   │
-│   ApiDTOs.cs    │    │ Business Rules  │    │   In-Memory     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+### Data Persistence Assumptions
+- In-memory storage is acceptable for this assignment scope
+- Thread safety is required for concurrent access to workflow data
+- Data does not need to persist between application restarts
+- Unique identifiers (GUIDs) are sufficient for entity identification
 
-## 🚀 Quick Start
+### API Design Assumptions
+- RESTful design principles should be followed for consistency
+- All responses should follow a consistent format with success/error indicators
+- Error messages should be descriptive enough for troubleshooting
+- OpenAPI documentation should be available for API exploration
+
+### Validation Assumptions
+- Business rule validation should occur at the service layer
+- Invalid operations should throw meaningful exceptions
+- All user inputs should be validated before processing
+- State transition validation should prevent invalid workflow states
+
+### Performance Assumptions
+- The system should handle moderate concurrent load for demonstration purposes
+- Response times under 100ms are acceptable for typical operations
+- Memory usage should be reasonable for the scope of this assignment
+- Database persistence is not required but architecture should support future enhancement
+
+## Known Limitations
+
+- **Data Persistence**: Uses in-memory storage, data is lost when application restarts
+- **Concurrency**: Basic thread safety using ConcurrentDictionary, not optimized for high concurrency
+- **Validation**: Business rules are hardcoded, not configurable
+- **Authentication**: No authentication or authorization implemented
+- **Logging**: Minimal logging, uses default ASP.NET Core logging
+- **Error Handling**: Generic exception handling, could be more specific
+- **Performance**: Not optimized for large numbers of workflows or instances
+
+## Features
+
+- Define workflows as state machines with states and actions
+- Create workflow instances from definitions
+- Execute actions on instances with validation
+- Track workflow history and current state
+- Comprehensive validation rules for state transitions
+- RESTful API for all operations
+- Thread-safe in-memory storage
+
+## Technology Stack
+
+- .NET 8
+- C# 12
+- ASP.NET Core Minimal APIs
+- Swagger/OpenAPI for documentation
+- xUnit for testing
+
+## Getting Started
 
 ### Prerequisites
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- Any IDE (Visual Studio, VS Code, Rider)
+- .NET 8 SDK
 
-### 1. Clone & Build
-```bash
-git clone <repository-url>
-cd WorkflowEngine
-dotnet build
-```
-
-### 2. Run the Application
+### Running the Application
 ```bash
 cd WorkflowEngine
 dotnet run
 ```
-**API will be available at**: `http://localhost:5000`
 
-### 3. Test the API
-```bash
-# Health check
-curl http://localhost:5000/health
+The API will be available at: `http://localhost:5000`
 
-# View API documentation
-# Open: http://localhost:5000/swagger
-```
-
-### 4. Run Tests
+### Testing
 ```bash
 dotnet test
 ```
 
-## 🔗 API Endpoints
+### API Documentation
+Open `http://localhost:5000/swagger` for interactive API documentation
+
+## Quick Start Instructions
+
+### Build and Run
+```bash
+# Clone the repository
+git clone <repository-url>
+cd WorkflowEngine
+
+# Build the project
+dotnet build
+
+# Run the application
+dotnet run --project WorkflowEngine
+
+# Run tests
+dotnet test
+```
+
+### Environment Notes
+- Requires .NET 8 SDK
+- Application runs on http://localhost:5000
+- Uses in-memory storage (data is lost on restart)
+- CORS enabled for development
+
+## API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/health` | Health check endpoint |
-| `POST` | `/api/workflows` | Create workflow definition |
-| `GET` | `/api/workflows` | List all workflow definitions |
-| `GET` | `/api/workflows/{id}` | Get specific workflow definition |
-| `POST` | `/api/workflows/{id}/instances` | Create workflow instance |
-| `GET` | `/api/instances` | List all workflow instances |
-| `GET` | `/api/instances/{id}` | Get specific workflow instance |
-| `POST` | `/api/instances/{id}/actions` | Execute action on instance |
+| GET | `/health` | Health check |
+| POST | `/api/workflows` | Create workflow definition |
+| GET | `/api/workflows` | List all workflow definitions |
+| GET | `/api/workflows/{id}` | Get specific workflow definition |
+| POST | `/api/workflows/{id}/instances` | Create workflow instance |
+| GET | `/api/instances` | List all workflow instances |
+| GET | `/api/instances/{id}` | Get specific workflow instance |
+| POST | `/api/instances/{id}/actions` | Execute action on instance |
 
-## 📖 Usage Examples
+## Project Structure
 
-### Creating a Workflow Definition
+```
+WorkflowEngine/
+├── WorkflowEngine/
+│   ├── Models/                    # Domain models
+│   ├── Services/                  # Business logic
+│   ├── DTOs/                      # Data transfer objects
+│   └── Program.cs                 # API endpoints
+├── WorkflowEngine.Tests/          # Unit tests
+└── WorkflowEngine.http           # HTTP test file
+```
 
+## Implementation Details
+
+### Models
+- **State**: Represents a workflow state with configuration
+- **WorkflowAction**: Defines transitions between states
+- **WorkflowDefinition**: Template for creating workflow instances
+- **WorkflowInstance**: Runtime instance of a workflow
+- **HistoryEntry**: Audit trail for state changes
+
+### Services
+- **WorkflowService**: Core business logic for workflow operations
+- **InMemoryWorkflowStore**: Thread-safe in-memory persistence
+
+### Validation Rules
+- Exactly one initial state per workflow
+- No duplicate state or action IDs
+- All action references must point to valid states
+- Actions cannot be executed on final or disabled states
+- State transitions must follow defined rules
+
+## Usage Example
+
+For detailed API usage and sample requests/responses, see [API_EXAMPLES.md](API_EXAMPLES.md).
+
+Creating a workflow definition:
 ```bash
 curl -X POST http://localhost:5000/api/workflows \
   -H "Content-Type: application/json" \
@@ -106,227 +184,34 @@ curl -X POST http://localhost:5000/api/workflows \
       { "id": "completed", "name": "Completed", "isFinal": true }
     ],
     "actions": [
-      { "id": "start", "name": "Start Processing", "fromState": "pending", "toState": "processing" },
-      { "id": "complete", "name": "Complete Order", "fromState": "processing", "toState": "completed" }
+      { "id": "start", "name": "Start Processing", "fromStates": ["pending"], "toState": "processing" },
+      { "id": "complete", "name": "Complete Order", "fromStates": ["processing"], "toState": "completed" }
     ]
   }'
 ```
 
-### Starting a Workflow Instance
+## Testing
 
-```bash
-curl -X POST http://localhost:5000/api/workflows/{workflow-id}/instances \
-  -H "Content-Type: application/json" \
-  -d '{ "name": "Order #12345" }'
-```
+The project includes comprehensive unit tests covering:
+- Workflow definition creation and validation
+- State machine transitions
+- Action execution with business rules
+- Error handling scenarios
 
-### Executing an Action
+## Design Decisions
 
-```bash
-curl -X POST http://localhost:5000/api/instances/{instance-id}/actions \
-  -H "Content-Type: application/json" \
-  -d '{ "actionId": "start" }'
-```
+### Architecture
+Clean separation between models, services, and DTOs following SOLID principles with dependency injection for testability.
 
-## 🧪 Testing
+### State Machine Implementation
+Immutable state transitions with comprehensive validation and complete history tracking for audit purposes.
 
-### Unit Tests
-The project includes 14 comprehensive unit tests covering:
+### Thread Safety
+Used ConcurrentDictionary for thread-safe operations in the in-memory store.
 
-- ✅ Workflow definition creation and validation
-- ✅ State machine transitions
-- ✅ Action execution with business rules
-- ✅ Error handling and edge cases
-- ✅ Final state and disabled state restrictions
+### API Design
+RESTful endpoints with consistent error handling and OpenAPI documentation for better developer experience.
 
-```bash
-# Run all tests
-dotnet test
+## Author
 
-# Run tests with coverage
-dotnet test --collect:"XPlat Code Coverage"
-```
-
-### Manual Testing
-- **HTTP File**: Use `WorkflowEngine.http` with VS Code REST Client
-- **Swagger UI**: Interactive API documentation at `http://localhost:5000/swagger`
-
-## 📁 Project Structure
-
-```
-WorkflowEngine/
-├── WorkflowEngine/                    # Main application
-│   ├── Models/                        # Domain models
-│   │   ├── State.cs                   # State definition
-│   │   ├── WorkflowAction.cs          # Action/transition definition
-│   │   ├── WorkflowDefinition.cs      # Workflow template
-│   │   ├── WorkflowInstance.cs        # Runtime instance
-│   │   └── HistoryEntry.cs            # Audit trail
-│   ├── Services/                      # Business logic
-│   │   ├── WorkflowService.cs         # Core workflow operations
-│   │   └── InMemoryWorkflowStore.cs   # Persistence layer
-│   ├── DTOs/                          # Data transfer objects
-│   │   └── ApiDTOs.cs                 # Request/response models
-│   └── Program.cs                     # API endpoints & startup
-├── WorkflowEngine.Tests/              # Unit tests
-│   └── WorkflowServiceTests.cs        # Comprehensive test suite
-├── WorkflowEngine.http                # HTTP test file
-├── WorkflowEngine.sln                 # Solution file
-└── README.md                          # This file
-```
-
-## 🎯 Design Decisions
-
-### 1. **Clean Architecture**
-- **Separation of Concerns**: Models, Services, DTOs clearly separated
-- **Dependency Injection**: Services are injected and testable
-- **Single Responsibility**: Each class has a focused purpose
-
-### 2. **State Machine Implementation**
-- **Immutable State Transitions**: State changes create new history entries
-- **Comprehensive Validation**: Business rules enforced at every step
-- **History Tracking**: Complete audit trail with timestamps
-
-### 3. **API Design**
-- **RESTful Endpoints**: Following HTTP conventions
-- **Consistent Error Handling**: Standardized error responses
-- **OpenAPI Documentation**: Swagger integration for API docs
-
-### 4. **Thread Safety**
-- **Concurrent Collections**: Using `ConcurrentDictionary` for thread safety
-- **Immutable Operations**: State changes don't modify existing objects
-- **Atomic Operations**: Critical sections properly handled
-
-## 🔄 Validation Rules
-
-The engine enforces these business rules:
-
-### Workflow Definition Validation
-- ✅ Must have exactly one initial state
-- ✅ No duplicate state or action IDs
-- ✅ All action references must point to valid states
-- ✅ State and action names must be provided
-
-### Runtime Validation
-- ✅ Actions can only be executed from valid states
-- ✅ Cannot execute actions on final states
-- ✅ Cannot execute actions on disabled states
-- ✅ Action must exist in the workflow definition
-
-## 🚀 Production Enhancements
-
-The codebase is designed for easy extension:
-
-### **Immediate Extensions**
-- **Database Persistence**: Replace in-memory storage with SQL/NoSQL
-- **Authentication**: Add JWT or API key authentication
-- **Logging**: Structured logging with Serilog
-- **Caching**: Redis for distributed scenarios
-
-### **Advanced Features**
-- **Workflow Versioning**: Support multiple workflow versions
-- **Conditional Transitions**: Complex business rules
-- **Parallel Execution**: Support for parallel workflow branches
-- **Event System**: Notifications and webhooks
-- **Visual Designer**: Web-based workflow designer
-
-## 📊 Performance Characteristics
-
-### **Current Implementation**
-- **Memory Usage**: ~10MB base + workflow data
-- **Startup Time**: <2 seconds
-- **Request Latency**: <50ms for typical operations
-- **Concurrency**: Thread-safe operations with basic locking
-
-### **Scalability Considerations**
-- **Horizontal Scaling**: Stateless design allows multiple instances
-- **Persistence**: In-memory storage limits to single instance
-- **Caching**: Ready for distributed caching implementation
-
-## 🎓 Assignment Requirements
-
-This implementation fully meets all assignment requirements:
-
-| Requirement | Implementation | Status |
-|-------------|---------------|---------|
-| **Define workflows as state machines** | Complete workflow definition API | ✅ |
-| **Start workflow instances** | Instance creation from definitions | ✅ |
-| **Execute actions on instances** | Action execution with validation | ✅ |
-| **Inspect current state** | Instance state and history APIs | ✅ |
-| **Validate state transitions** | Comprehensive validation rules | ✅ |
-| **Handle errors gracefully** | Structured error responses | ✅ |
-| **Use .NET 8 and C#** | Modern .NET 8 with latest features | ✅ |
-| **Minimal external dependencies** | Only built-in .NET libraries | ✅ |
-| **Clean, maintainable code** | SOLID principles, clear structure | ✅ |
-| **Comprehensive documentation** | README, code comments, examples | ✅ |
-
-## 🏆 Technical Highlights
-
-### **Code Quality**
-- **SOLID Principles**: Single responsibility, dependency injection, open/closed principle
-- **Clean Code**: Self-documenting method names, clear variable names
-- **Error Handling**: Comprehensive error handling with helpful messages
-- **Documentation**: XML comments and comprehensive README
-
-### **Testing Strategy**
-- **Unit Tests**: 14 tests covering all major scenarios
-- **Integration Tests**: HTTP test file for API validation
-- **Manual Testing**: Demo scripts for complete workflow scenarios
-
-### **Performance**
-- **Thread Safety**: Concurrent collections for basic thread safety
-- **Memory Efficiency**: Minimal object allocation, efficient data structures
-- **Scalability**: Stateless design ready for horizontal scaling
-
-## 📈 Future Roadmap
-
-### **Phase 1: Persistence**
-- Database integration (SQL Server, PostgreSQL)
-- Entity Framework Core implementation
-- Migration support
-
-### **Phase 2: Advanced Features**
-- Workflow versioning and migration
-- Conditional transitions with business rules
-- Parallel execution branches
-
-### **Phase 3: Enterprise Features**
-- Authentication and authorization
-- Audit logging and compliance
-- Performance monitoring and metrics
-
-## 🤝 Contributing
-
-This is an assignment submission, but the codebase is structured for easy extension:
-
-1. **Fork** the repository
-2. **Create** a feature branch
-3. **Add** comprehensive tests
-4. **Submit** a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👤 Author
-
-**Student Assignment Submission**  
-*Configurable Workflow Engine for Infonetica*
-
----
-
-## 🎯 Summary
-
-This **Configurable Workflow Engine** demonstrates:
-
-- ✅ **Complete Implementation**: All requirements met with production-ready code
-- ✅ **Clean Architecture**: SOLID principles and separation of concerns
-- ✅ **Comprehensive Testing**: 14 unit tests with 100% pass rate
-- ✅ **Excellent Documentation**: Clear README and inline documentation
-- ✅ **Extensible Design**: Ready for persistence, authentication, and advanced features
-
-**Built with .NET 8, following best practices and clean architecture principles** 🚀
-
----
-
-*For detailed implementation notes, see [GETTING_STARTED.md](GETTING_STARTED.md)*
+Student Assignment Submission for Infonetica
