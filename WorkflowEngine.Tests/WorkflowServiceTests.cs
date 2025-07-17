@@ -122,11 +122,12 @@ public class WorkflowServiceTests
         var definition = _service.CreateWorkflowDefinition(request);
 
         // Act
-        var instance = _service.CreateWorkflowInstance(definition.Id);
+        var instance = _service.CreateWorkflowInstance(definition.Id, "Test Instance");
 
         // Assert
         Assert.NotNull(instance);
         Assert.Equal(definition.Id, instance.DefinitionId);
+        Assert.Equal("Test Instance", instance.Name);
         Assert.Equal("draft", instance.CurrentStateId);
         Assert.Empty(instance.History);
     }

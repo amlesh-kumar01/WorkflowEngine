@@ -105,11 +105,11 @@ app.MapGet("/api/workflows/{id}", (string id, WorkflowService service) =>
 /// <summary>
 /// Creates a new workflow instance from a workflow definition.
 /// </summary>
-app.MapPost("/api/workflows/{definitionId}/instances", (string definitionId, WorkflowService service) =>
+app.MapPost("/api/workflows/{definitionId}/instances", (string definitionId, CreateWorkflowInstanceRequest request, WorkflowService service) =>
 {
     try
     {
-        var instance = service.CreateWorkflowInstance(definitionId);
+        var instance = service.CreateWorkflowInstance(definitionId, request.Name);
         return Results.Created($"/api/instances/{instance.Id}", ApiResponse<WorkflowInstance>.Ok(instance));
     }
     catch (InvalidOperationException ex)

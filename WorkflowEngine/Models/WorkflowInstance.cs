@@ -17,6 +17,11 @@ public class WorkflowInstance
     public string DefinitionId { get; set; } = string.Empty;
     
     /// <summary>
+    /// Human-readable name for the workflow instance for easier identification.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+    
+    /// <summary>
     /// ID of the current state of this workflow instance.
     /// </summary>
     public string CurrentStateId { get; set; } = string.Empty;

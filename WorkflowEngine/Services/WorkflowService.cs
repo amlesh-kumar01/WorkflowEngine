@@ -157,9 +157,10 @@ public class WorkflowService
     /// Creates a new workflow instance from a workflow definition.
     /// </summary>
     /// <param name="definitionId">The ID of the workflow definition.</param>
+    /// <param name="name">The name for the workflow instance.</param>
     /// <returns>The created workflow instance.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the definition doesn't exist.</exception>
-    public WorkflowInstance CreateWorkflowInstance(string definitionId)
+    public WorkflowInstance CreateWorkflowInstance(string definitionId, string name = "")
     {
         var definition = _store.GetDefinition(definitionId);
         if (definition == null)
@@ -172,6 +173,7 @@ public class WorkflowService
         var instance = new WorkflowInstance
         {
             DefinitionId = definitionId,
+            Name = name,
             CurrentStateId = initialState.Id
         };
         

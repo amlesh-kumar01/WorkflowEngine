@@ -40,6 +40,17 @@ public class ExecuteActionRequest
 }
 
 /// <summary>
+/// Data transfer object for creating a new workflow instance.
+/// </summary>
+public class CreateWorkflowInstanceRequest
+{
+    /// <summary>
+    /// Name of the workflow instance for identification.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+}
+
+/// <summary>
 /// Standard API response wrapper for error handling.
 /// </summary>
 public class ApiResponse<T>
